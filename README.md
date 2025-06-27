@@ -1,0 +1,2 @@
+# francedownloader
+sftp
