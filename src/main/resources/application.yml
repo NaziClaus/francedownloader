@@ -16,3 +16,4 @@ sftp:
 
 app:
   download-dir: D:/Downloads
+  csv-file: D:/Downloads/download_history.csv

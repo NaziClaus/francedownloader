@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.sftploader.report.CsvReportWriter;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,12 +24,15 @@ public class SftpSyncService {
     private final SftpClientWrapper client;
     private final FileRecordRepository repo;
     private final Path downloadDir;
+    private final CsvReportWriter csvWriter;
 
     public SftpSyncService(SftpClientWrapper client,
                            FileRecordRepository repo,
+                           CsvReportWriter csvWriter,
                            @Value("${app.download-dir}") String downloadDir) {
         this.client = client;
         this.repo = repo;
+        this.csvWriter = csvWriter;
         this.downloadDir = Path.of(downloadDir);
     }
 
@@ -83,6 +87,7 @@ public class SftpSyncService {
                     record.setDownloaded(true);
                     record.setLastDownloaded(now);
                     repo.save(record);
+                    csvWriter.append(record);
                     logger.info("Downloaded {}", info.getFilename());
                 }
             }
