@@ -17,4 +17,6 @@ Edit environment variables in `.env` and run:
 docker-compose up --build
 ```
 
+The database schema is created automatically on startup using `src/main/resources/schema.sql`. Ensure the PostgreSQL container credentials are set via environment variables.
+
 The CSV report path can be configured via `app.csv-file` in `application.yml`.
