@@ -9,6 +9,8 @@ from .sftp_client import SftpClient
 from .registry import Registry
 from .models import FileRecord
 
+os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
+
 logging.basicConfig(
     filename=LOG_FILE,
     level=logging.INFO,

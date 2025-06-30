@@ -29,4 +29,4 @@ Build and start the containers:
 docker-compose up --build
 ```
 
-Logs and downloaded files will be placed in the `data/` directory on the host.
+Logs and downloaded files will be placed in the `data/` directory on the host. The service creates the log directory automatically if needed.
