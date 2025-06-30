@@ -6,14 +6,27 @@ A simple service that periodically scans a remote SFTP directory and downloads n
 - Python 3.9+
 - PostgreSQL 14+
 
-Install dependencies:
+Install dependencies manually (optional):
 ```bash
 pip install -r requirements.txt
 ```
 
-Copy `.env.example` to `.env` and edit connection parameters.
+Copy `.env.example` to `.env` and edit connection parameters. The same file is
+used by `docker-compose`.
 
 Run the service:
 ```bash
 python -m francedownloader.main
 ```
+
+## Docker
+
+You can run the loader together with PostgreSQL using Docker Compose.
+
+Build and start the containers:
+
+```bash
+docker-compose up --build
+```
+
+Logs and downloaded files will be placed in the `data/` directory on the host.
