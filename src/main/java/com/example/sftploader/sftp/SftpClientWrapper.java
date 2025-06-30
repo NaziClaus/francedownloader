@@ -20,7 +20,6 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 @Component
 public class SftpClientWrapper {
@@ -39,21 +38,21 @@ public class SftpClientWrapper {
     private String remoteDir;
 
     private ChannelSftp setup() throws Exception {
-        JSch jsch = new JSch();
-        Session session = jsch.getSession(user, host, port);
+        var jsch = new JSch();
+        var session = jsch.getSession(user, host, port);
         session.setPassword(password);
         session.setConfig("StrictHostKeyChecking", "no");
         session.connect();
-        Channel channel = session.openChannel("sftp");
+        var channel = session.openChannel("sftp");
         channel.connect();
         return (ChannelSftp) channel;
     }
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 30000))
     public List<SftpFileInfo> listFiles(String path) throws Exception {
-        ChannelSftp sftp = setup();
+        var sftp = setup();
         try {
-            Vector<ChannelSftp.LsEntry> files = sftp.ls(path);
+            var files = sftp.ls(path);
             List<SftpFileInfo> result = new ArrayList<>();
             for (LsEntry entry : files) {
                 if (!entry.getAttrs().isDir()) {
@@ -74,7 +73,7 @@ public class SftpClientWrapper {
 
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 30000))
     public void download(String remote, Path local) throws Exception {
-        ChannelSftp sftp = setup();
+        var sftp = setup();
         try (InputStream in = sftp.get(remote)) {
             Files.copy(in, local);
         } finally {

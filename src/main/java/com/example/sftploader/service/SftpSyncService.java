@@ -43,13 +43,13 @@ public class SftpSyncService {
             Files.createDirectories(downloadDir);
             List<SftpFileInfo> files = client.listFiles(client.getRemoteDir());
             for (SftpFileInfo info : files) {
-                if (shouldHandle(info.getFilename())) {
-                    repo.findByRemotePath(info.getPath()).orElseGet(() -> {
+                if (shouldHandle(info.filename())) {
+                    repo.findByRemotePath(info.path()).orElseGet(() -> {
                         FileRecord record = new FileRecord();
-                        record.setFilename(info.getFilename());
-                        record.setRemotePath(info.getPath());
-                        record.setSize(info.getSize());
-                        record.setRemoteMtime(info.getMtime());
+                        record.setFilename(info.filename());
+                        record.setRemotePath(info.path());
+                        record.setSize(info.size());
+                        record.setRemoteMtime(info.mtime());
                         return repo.save(record);
                     });
                 }
@@ -67,28 +67,28 @@ public class SftpSyncService {
             List<SftpFileInfo> files = client.listFiles(client.getRemoteDir());
             Instant now = Instant.now();
             for (SftpFileInfo info : files) {
-                if (!shouldHandle(info.getFilename())) {
+                if (!shouldHandle(info.filename())) {
                     continue;
                 }
-                FileRecord record = repo.findByRemotePath(info.getPath())
+                FileRecord record = repo.findByRemotePath(info.path())
                         .orElseGet(() -> {
                             FileRecord r = new FileRecord();
-                            r.setFilename(info.getFilename());
-                            r.setRemotePath(info.getPath());
+                            r.setFilename(info.filename());
+                            r.setRemotePath(info.path());
                             return r;
                         });
-                if (record.getRemoteMtime() == null || info.getMtime().isAfter(record.getRemoteMtime())) {
-                    Path tempPath = downloadDir.resolve(info.getFilename() + ".part");
-                    Path finalPath = downloadDir.resolve(info.getFilename());
-                    client.download(info.getPath(), tempPath);
+                if (record.getRemoteMtime() == null || info.mtime().isAfter(record.getRemoteMtime())) {
+                    Path tempPath = downloadDir.resolve(info.filename() + ".part");
+                    Path finalPath = downloadDir.resolve(info.filename());
+                    client.download(info.path(), tempPath);
                     Files.move(tempPath, finalPath);
-                    record.setSize(info.getSize());
-                    record.setRemoteMtime(info.getMtime());
+                    record.setSize(info.size());
+                    record.setRemoteMtime(info.mtime());
                     record.setDownloaded(true);
                     record.setLastDownloaded(now);
                     repo.save(record);
                     csvWriter.append(record);
-                    logger.info("Downloaded {}", info.getFilename());
+                    logger.info("Downloaded {}", info.filename());
                 }
             }
         } catch (Exception e) {
