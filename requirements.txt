@@ -1,0 +1,6 @@
+paramiko
+apscheduler
+sqlalchemy
+tenacity
+python-decouple
+psycopg2-binary
